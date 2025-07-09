@@ -29,7 +29,15 @@ function updateWeatherUI(data) {
 
   document.getElementById('locationName').textContent = `${data.name}, ${data.sys.country}`;
   document.getElementById('countryFlag').src = `https://flagcdn.com/48x36/${data.sys.country.toLowerCase()}.png`;
-  document.getElementById('dateTime').textContent = new Date().toLocaleString();
+
+  // Show date once, clock separately
+  const now = new Date();
+  const datePart = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  document.getElementById('dateTime').innerHTML = `
+    <div>${datePart}</div>
+    <div id="clock"></div>
+  `;
+
   document.getElementById('temperature').textContent = `${celsius}°C / ${fahrenheit}°F`;
   document.getElementById('feelsLike').textContent = `Feels like: ${feelsC}°C / ${feelsF}°F`;
   document.getElementById('weatherCondition').textContent = data.weather[0].main;
@@ -57,7 +65,16 @@ function showError(msg) {
   weatherInfo.innerHTML = `<p style="color:red; font-weight:bold;">${msg}</p>`;
 }
 
+// Live clock every second
+setInterval(() => {
+  const date = new Date();
+  const clock = document.getElementById('clock');
+  if (clock) {
+    clock.innerHTML = date.toLocaleTimeString();
+  }
+}, 1000);
+
+// Load Dhaka by default
 window.addEventListener('DOMContentLoaded', () => {
   fetchWeather('Dhaka');
 });
-
